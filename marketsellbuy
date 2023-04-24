@@ -1,0 +1,25 @@
+from okex import Client
+import time
+
+api_key = 'a2c70e62-14a0-4121-b2e6-af0b6b818302'
+api_secret = 'CF58E11E3B26C0FF320C35DE0057C58E'
+api_passphrase = 'Bolu1481.'
+
+client = Client(api_key, api_secret, api_passphrase)
+
+while True:
+    for i in range(10):
+        balance = client.get_wallet()['spot']['free']['USDT']
+        ticker = client.get_ticker('BTC-USDT')
+        current_price = float(ticker['last'])
+
+        # place a market sell order
+        sell_result = client.place_market_order('BTC-USDT', 'sell', quantity=balance)
+
+        # place a market buy order
+        buy_result = client.place_market_order('BTC-USDT', 'buy', funds=balance)
+
+        print(f"Sell order placed for BTC-USDT at {current_price}. Order ID: {sell_result['order_id']}")
+        print(f"Buy order placed for BTC-USDT at {current_price}. Order ID: {buy_result['order_id']}")
+
+    time.sleep(0.1)  # sleep for 0.1 seconds to achieve a rate of 10 executions per second
